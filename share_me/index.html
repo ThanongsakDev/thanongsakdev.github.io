@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlexShare Manager - MINI App</title>
+    <link id="favicon" rel="icon" href="https://cdn-icons-png.flaticon.com/128/719/719731.png">
+    <link id="apple-touch-icon" rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/128/719/719731.png">
+    <meta name="description" content="FlexShare Manager - MINI App" />
+    <meta name="author" content="iton5" />
+    <meta property="og:title" content="FlexShare Manager - MINI App" />
+    <meta property="og:description" content="FlexShare Manager - MINI App" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://botstickerlth.iton5.com" />
+    <meta property="og:image" content="https://cdn-icons-png.flaticon.com/128/719/719731.png" />
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/128/719/719731.png">
+    <meta name="description" content="FlexShare Manager - MINI App" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/lazywasabi/thai-web-fonts@7/fonts/LINESeedSansTH/LINESeedSansTH.css"
+        rel="stylesheet" />
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'LINE Seed Sans TH', 'Prompt', sans-serif;
+            background-color: #2b2d42;
+            color: #edf2f4;
+            overflow-x: hidden;
+        }
+
+
+        .btn-3d {
+            transition: all 0.1s;
+            position: relative;
+            top: 0;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .btn-3d:active {
+            top: 6px;
+            box-shadow: 0 0px 0 0 !important;
+        }
+
+
+        .btn-blue {
+            background-color: #3a86ff;
+            box-shadow: 0 6px 0 0 #1e5bb8;
+            color: white;
+        }
+
+        .btn-green {
+            background-color: #06d6a0;
+            box-shadow: 0 6px 0 0 #049c74;
+            color: #0d3b2e;
+        }
+
+        .btn-red {
+            background-color: #ef476f;
+            box-shadow: 0 6px 0 0 #bd1e41;
+            color: white;
+        }
+
+        .btn-yellow {
+            background-color: #ffd166;
+            box-shadow: 0 6px 0 0 #cc9e00;
+            color: #5c4500;
+        }
+
+        .btn-purple {
+            background-color: #8338ec;
+            box-shadow: 0 6px 0 0 #5a189a;
+            color: white;
+        }
+
+
+        .card-3d {
+            background: #3d405b;
+            border-radius: 1.5rem;
+            box-shadow:
+                12px 12px 24px #1f2130,
+                -12px -12px 24px #373954;
+            transition: transform 0.3s;
+        }
+
+        .card-3d:hover {
+            transform: translateY(-5px);
+        }
+
+        .input-3d {
+            background: #2b2d42;
+            box-shadow: inset 5px 5px 10px #1f2130, inset -5px -5px 10px #373954;
+            border: none;
+            color: white;
+            padding: 1rem;
+            border-radius: 1rem;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .input-3d:focus {
+            outline: none;
+            box-shadow: inset 2px 2px 5px #1f2130, inset -2px -2px 5px #373954;
+        }
+
+
+        .swal2-popup {
+            background-color: #3d405b !important;
+            border-radius: 20px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+            color: white !important;
+        }
+
+        .swal2-title,
+        .swal2-content {
+            color: white !important;
+        }
+
+        .swal2-confirm {
+            background-color: #06d6a0 !important;
+            box-shadow: 0 4px 0 0 #049c74 !important;
+        }
+
+        .swal2-cancel {
+            background-color: #ef476f !important;
+            box-shadow: 0 4px 0 0 #bd1e41 !important;
+        }
+
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(43, 45, 66, 0.9);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .role-badge {
+            background: #ffd166;
+            color: #5c4500;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.7em;
+            font-weight: bold;
+            box-shadow: 0 2px 0 #cc9e00;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen pb-20">
+
+    <div id="loading-overlay">
+        <img src="https://developers.line.biz/media/line-mini-app/LINE_spinner_light.svg" width="60" alt="Loading...">
+        <p id="loading-text" class="text-2xl font-bold tracking-wider text-[#ffd166]">LOADING...</p>
+    </div>
+
+
+    <div id="app-ui" class="hidden">
+        <header class="pt-8 pb-4 text-center px-4">
+            <div
+                class="bg-[#3d405b] inline-block px-6 py-2 rounded-2xl shadow-[6px_6px_12px_#1f2130,-6px_-6px_12px_#373954] mb-4">
+                <h1
+                    class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#ffd166] to-[#ef476f]">
+                    FlexShare Manager
+                </h1>
+            </div>
+            <p id="user-greeting" class="text-gray-400 text-sm mt-2">Welcome Check...</p>
+        </header>
+
+        <div id="admin-panel" class="container mx-auto px-4 mb-6 hidden">
+            <div class="bg-[#8338ec] rounded-2xl p-6 relative overflow-hidden shadow-[0_10px_0_#5a189a]">
+                <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white"><i class="fas fa-crown mr-2"></i>Admin Console</h2>
+                        <p class="text-purple-200 text-sm">จัดการลูกค้าและสิทธิ์การใช้งาน</p>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="manageUsers()"
+                            class="btn-3d btn-yellow px-6 py-3 rounded-xl border border-yellow-600 text-sm">
+                            <i class="fas fa-users-cog mr-2"></i>จัดการลูกค้า (Admin)
+                        </button>
+                        <button onclick="generateInvite()"
+                            class="btn-3d btn-blue px-6 py-3 rounded-xl border border-blue-800 text-sm">
+                            <i class="fas fa-link mr-2"></i>สร้าง Link คำเชิญ
+                        </button>
+                    </div>
+                </div>
+
+                <div class="absolute -right-10 -bottom-20 w-64 h-64 bg-white opacity-10 rounded-full"></div>
+                <div class="absolute -left-10 -top-20 w-40 h-40 bg-white opacity-10 rounded-full"></div>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-4 md:px-8">
+            <div class="flex flex-col md:flex-row gap-4 mb-8">
+                <div class="flex-grow">
+                    <input type="text" id="search-input" class="input-3d text-lg"
+                        placeholder="🔍 ค้นหา Flex Message...">
+                </div>
+                <button id="add-new-btn"
+                    class="btn-3d btn-green px-8 py-3 rounded-xl flex-shrink-0 text-lg flex justify-center items-center">
+                    <i class="fas fa-plus mr-2"></i> สร้างใหม่
+                </button>
+            </div>
+
+            <div id="flex-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            </div>
+        </div>
+    </div>
+
+
+    <script type="module">
+        const LIFF_ID = "2009040976-c4n34moj";
+        const SUPABASE_URL = "https://danbpunjbzksjxekyvkb.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhbmJwdW5qYnprc2p4ZWt5dmtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMDQ0MjgsImV4cCI6MjA4NTY4MDQyOH0._qNgd39dOTuh3Rrul5SrAaV4DKryUf9J4DuAvZA2M7Q";
+
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let USER_ID = null;
+        let USER_PROFILE = null;
+        let USER_ROLE = null;
+
+
+
+        const showLoading = (text) => { document.getElementById('loading-text').innerText = text; document.getElementById('loading-overlay').style.display = 'flex'; };
+        const hideLoading = () => document.getElementById('loading-overlay').style.display = 'none';
+        const toast = (icon, title) => Swal.fire({ icon, title, toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
+
+        async function initApp() {
+            showLoading('Checking System...');
+            try {
+                await liff.init({ liffId: LIFF_ID, withLoginOnExternalBrowser: true });
+                await liff.ready;
+                if (!liff.isLoggedIn()) {
+                    liff.login({ redirectUri: window.location.href });
+                    return;
+                }
+
+                let profile;
+                try {
+                    profile = await liff.getProfile();
+                } catch (err) {
+                    console.warn("Profile Error:", err);
+
+                    if (err.code === '401' || err.message.includes('expired') || err.message.includes('token')) {
+                        console.log("Token expired, refreshing...");
+                        liff.logout();
+                        liff.login({ redirectUri: window.location.href });
+                        return;
+                    }
+                    throw err;
+                }
+
+                USER_ID = profile.userId;
+                USER_PROFILE = profile;
+
+                document.getElementById('user-greeting').innerText = `สวัสดี, ${profile.displayName}`;
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const shareUuid = urlParams.get('share');
+                const inviteToken = urlParams.get('invite');
+
+                if (shareUuid) {
+                    await handleAutoShare(shareUuid);
+                    return;
+                }
+
+                if (inviteToken) {
+                    await handleInvite(inviteToken);
+                }
+
+                const isAuthorized = await checkAuth();
+                if (!isAuthorized) return;
+
+                document.getElementById('app-ui').classList.remove('hidden');
+
+                await loadMessages();
+
+            } catch (err) {
+                console.error(err);
+                Swal.fire('Error', 'ไม่สามารถเชื่อมต่อระบบได้: ' + err.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function checkAuth() {
+            try {
+                const { data, error } = await supabaseClient.from('adminshare').select('*').eq('user_id', USER_ID).maybeSingle();
+
+                if (error) {
+                    console.error("Auth Check Error:", error);
+                    return false;
+                }
+
+                if (data) {
+                    USER_ROLE = data.role || 'customer';
+
+                    if (data.expire_at) {
+                        const expireDate = new Date(data.expire_at);
+                        const now = new Date();
+                        if (now > expireDate) {
+                            Swal.fire({
+                                title: 'Account Expired',
+                                text: 'การใช้งานของคุณหมดอายุแล้ว กรุณาติดต่อแอดมิน',
+                                icon: 'error',
+                                allowOutsideClick: false,
+                                confirmButtonText: 'ปิด'
+                            }).then(() => liff.closeWindow());
+                            return false;
+                        }
+                    }
+
+                    if (USER_ROLE === 'admin') {
+                        document.getElementById('admin-panel').classList.remove('hidden');
+                        toast('success', 'Admin Mode Activated');
+                    }
+
+                    return true;
+                } else {
+                    window.location.href = 'https://line.me/';
+                    return false;
+                }
+            } catch (err) {
+                console.error(err);
+                return false;
+            }
+        }
+
+        async function handleInvite(token) {
+            showLoading('Checking Invite...');
+            const { data: invite, error } = await supabaseClient.from('app_invites').select('*').eq('token', token).single();
+
+            if (error || !invite) {
+                hideLoading();
+                await Swal.fire('Error', 'ลิ้งค์คำเชิญไม่ถูกต้อง หรือถูกยกเลิกแล้ว', 'error');
+                return;
+            }
+
+            if (invite.is_used) {
+                hideLoading();
+                await Swal.fire('Warning', 'ลิ้งค์นี้ถูกใช้งานไปแล้ว', 'warning');
+                return;
+            }
+
+            const { error: regError } = await supabaseClient.from('adminshare').upsert({
+                user_id: USER_ID,
+                name: USER_PROFILE.displayName,
+                role: 'customer'
+            }, { onConflict: 'user_id', ignoreDuplicates: true });
+
+            if (regError) {
+                hideLoading();
+                await Swal.fire('Error', 'ลงทะเบียนไม่สำเร็จ: ' + regError.message, 'error');
+                return;
+            }
+
+            await supabaseClient.from('app_invites').update({ is_used: true }).eq('id', invite.id);
+
+            hideLoading();
+            await Swal.fire('Success', 'ยินดีต้อนรับ! คุณได้รับสิทธิ์เข้าใช้งานแล้ว', 'success');
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.delete('invite');
+            window.history.replaceState({}, document.title, newUrl.toString());
+        }
+
+        async function loadMessages() {
+            showLoading('Loading Assets...');
+            const container = document.getElementById('flex-grid');
+            container.innerHTML = '';
+
+            try {
+                let query = supabaseClient.from('shareflex').select('*').order('created_at', { ascending: false });
+
+                query = query.eq('owner_id', USER_ID);
+
+                const { data, error } = await query;
+                if (error) throw error;
+
+                if (data.length === 0) {
+                    container.innerHTML = `
+                        <div class="col-span-full text-center py-20 text-gray-500">
+                            <i class="fas fa-box-open text-6xl mb-4 text-[#3d405b]"></i>
+                            <p>ยังไม่มีข้อความ เริ่มต้นสร้างเลย!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                data.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'card-3d p-6 flex flex-col justify-between h-full relative group';
+                    card.innerHTML = `
+                        <div class="mb-4">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="bg-[#2b2d42] text-xs px-2 py-1 rounded text-gray-400 font-mono">#${item.category}</span>
+                                <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+                                     <button onclick="deleteMsg(${item.id})" class="text-red-400 hover:text-red-200"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-1 line-clamp-1">${item.title}</h3>
+                            <p class="text-xs text-gray-400">ID: ${item.id}</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-3 mt-auto">
+                            <button onclick="shareMsg(${item.id}, '${item.owner_id}', '${encodeURIComponent(JSON.stringify(item.flex_json)).replace(/'/g, "%27")}')" class="btn-3d btn-green py-2 rounded-lg text-sm font-bold text-center">
+                                <i class="fas fa-share"></i> Share <span class="bg-white/20 px-1 rounded text-xs ml-1">${item.share_count || 0}</span>
+                            </button>
+                            <button onclick="getLink('${item.share_uuid || ''}', ${item.id})" class="btn-3d btn-purple py-2 rounded-lg text-sm font-bold text-center">
+                                <i class="fas fa-link"></i> Link
+                            </button>
+                            <button onclick="editMsg(${item.id})" class="btn-3d btn-blue py-2 rounded-lg text-sm font-bold text-center col-span-2">
+                                <i class="fas fa-edit"></i> Edit Content
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+
+            } catch (err) {
+                console.error(err);
+                toast('error', 'โหลดข้อมูลไม่สำเร็จ');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        window.generateInvite = async () => {
+            const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            try {
+                const { error } = await supabaseClient.from('app_invites').insert({
+                    token: token,
+                    created_by: USER_ID
+                });
+                if (error) throw error;
+
+                const link = `https://line.me/R/app/${LIFF_ID}?invite=${token}`;
+
+                Swal.fire({
+                    title: 'Invite Link Generated!',
+                    html: `
+                        <p class="text-sm text-gray-300 mb-2">ส่งลิงก์นี้ให้ลูกค้าเพื่อเปิดใน LINE:</p>
+                        <div class="bg-[#2b2d42] p-4 rounded-xl break-all text-sm mb-4 border border-gray-600 font-mono text-yellow-400 select-all">
+                            ${link}
+                        </div>
+                    `,
+                    confirmButtonText: 'Copy Link',
+                    showCancelButton: true,
+                    cancelButtonText: 'Close'
+                }).then((res) => {
+                    if (res.isConfirmed) {
+                        navigator.clipboard.writeText(link);
+                        toast('success', 'Copied to clipboard');
+                    }
+                });
+
+            } catch (err) {
+                toast('error', 'สร้าง Link ไม่สำเร็จ');
+            }
+        };
+
+        window.manageUsers = async () => {
+            showLoading('Fetching users...');
+            try {
+                const { data: users, error } = await supabaseClient.from('adminshare').select('*').order('created_at', { ascending: false });
+                if (error) throw error;
+
+                window.renderUserList = (searchTerm = '') => {
+                    const filtered = users.filter(u =>
+                        (u.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        u.user_id.toLowerCase().includes(searchTerm.toLowerCase())
+                    );
+
+                    const listHtml = filtered.map(u => {
+                        const role = u.role || 'customer';
+
+                        let expireText = 'No Expiry';
+                        let expireColor = 'text-gray-500';
+                        if (u.expire_at) {
+                            const d = new Date(u.expire_at);
+                            expireText = d.toLocaleString('th-TH', { day: 'numeric', month: 'short', year: '2-digit', hour: '2-digit', minute: '2-digit' });
+                            if (d < new Date()) expireColor = 'text-red-400 font-bold';
+                            else expireColor = 'text-green-400';
+                        }
+
+                        return `
+                        <div class="bg-[#2b2d42] p-3 rounded-lg mb-2 flex flex-col gap-2 shadow-sm border border-gray-700">
+                            <div class="flex justify-between items-start">
+                                <div class="overflow-hidden flex-grow">
+                                    <div class="font-bold text-white text-sm truncate uppercase"><i class="fas fa-user-circle mr-1"></i> ${u.name || 'No Name'}</div>
+                                    <div class="text-[10px] text-gray-500 truncate font-mono">ID: ${u.user_id} | Shares: <span class="text-yellow-400 font-bold">${u.total_shares || 0}</span></div>
+                                </div>
+                                <div class="flex items-center gap-2 flex-shrink-0">
+                                   ${u.user_id !== USER_ID ? `
+                                    <button onclick="deleteUser('${u.user_id}')" class="bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white p-2 rounded-lg transition-colors">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>` : ''}
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-between items-center border-t border-gray-700 pt-2 mt-1">
+                                <button onclick="toggleRole('${u.user_id}', '${role}')" class="role-badge cursor-pointer scale-90 origin-left hover:opacity-80 transition-opacity ${role === 'admin' ? 'bg-yellow-400 text-yellow-900' : 'bg-blue-400 text-blue-900'}">
+                                    ${role.toUpperCase()}
+                                </button>
+                                
+                                <button onclick="editExpiry('${u.user_id}', '${u.expire_at || ''}')" class="flex items-center gap-2 text-xs hover:bg-white/5 py-1 px-2 rounded transition-colors">
+                                    <i class="fas fa-clock text-yellow-400"></i>
+                                    <span class="${expireColor}">${expireText}</span>
+                                    <i class="fas fa-edit text-gray-500"></i>
+                                </button>
+                            </div>
+                        </div>`;
+                    }).join('');
+
+                    return listHtml || '<p class="text-gray-500 text-center py-4">ไม่พบข้อมูล</p>';
+                };
+
+                Swal.fire({
+                    title: 'User Management',
+                    html: `
+                        <div class="text-left space-y-4">
+                             <!-- Specify Add User -->
+                            <div class="bg-[#2b2d42] p-3 rounded-xl border border-dashed border-gray-600">
+                                <div class="text-xs text-gray-400 mb-2 uppercase font-bold">Add Manual User / Admin</div>
+                                <div class="flex flex-col gap-2">
+                                    <input id="manual-name" class="swal2-input !m-0 !h-9 !text-sm" placeholder="Name (ชื่ออ้างอิง)">
+                                    <input id="manual-id" class="swal2-input !m-0 !h-9 !text-sm" placeholder="Line User ID">
+                                    <button onclick="addManualUser()" class="btn-3d btn-green px-3 py-2 rounded text-sm w-full"><i class="fas fa-plus mr-2"></i>Add User</button>
+                                </div>
+                            </div>
+
+                            <!-- Search -->
+                            <div class="relative">
+                                <i class="fas fa-search absolute left-3 top-3 text-gray-500"></i>
+                                <input id="user-search" class="swal2-input !m-0 !pl-10 !w-full !h-10 !text-sm !bg-[#2b2d42] !text-white !border-none shadow-inner" placeholder="Search name or ID...">
+                            </div>
+
+                            <!-- List -->
+                            <div id="user-list-container" class="max-h-60 overflow-y-auto custom-scrollbar pr-1">
+                                ${window.renderUserList()}
+                            </div>
+                        </div>
+                    `,
+                    showConfirmButton: false,
+                    showCloseButton: true,
+                    didOpen: () => {
+                        document.getElementById('user-search').addEventListener('input', (e) => {
+                            document.getElementById('user-list-container').innerHTML = window.renderUserList(e.target.value);
+                        });
+                    }
+                });
+
+            } catch (err) {
+                toast('error', 'โหลดข้อมูลไม่สำเร็จ');
+            } finally {
+                hideLoading();
+            }
+        };
+
+        window.addManualUser = async () => {
+            const name = document.getElementById('manual-name').value.trim();
+            const uid = document.getElementById('manual-id').value.trim();
+            if (!uid || !name) return toast('warning', 'ใส่ชื่อและ User ID ให้ครบ');
+
+            showLoading('Adding...');
+            const { error } = await supabaseClient.from('adminshare').insert({ user_id: uid, name: name, role: 'customer' });
+
+            if (error) toast('error', 'เพิ่มไม่สำเร็จ (อาจมีอยู่แล้ว)');
+            else {
+                toast('success', 'เพิ่มเรียบร้อย');
+                Swal.close();
+                manageUsers();
+            }
+            hideLoading();
+        };
+
+        window.editExpiry = async (uid, currentVal) => {
+
+            let defaultDate = '';
+            if (currentVal && currentVal !== 'null') {
+
+                const d = new Date(currentVal);
+                d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                defaultDate = d.toISOString().slice(0, 16);
+            }
+
+            const { value: formDates } = await Swal.fire({
+                title: 'Set Expiration Date',
+                html: `
+                    <input id="swal-date" type="datetime-local" class="swal2-input" value="${defaultDate}">
+                    <div class="mt-2 text-sm text-gray-400 cursor-pointer hover:text-red-400" onclick="document.getElementById('swal-date').value=''">
+                        <i class="fas fa-times-circle"></i> Clear (No Expiry)
+                    </div>
+                `,
+                focusConfirm: false,
+                showCancelButton: true,
+                preConfirm: () => {
+                    return document.getElementById('swal-date').value;
+                }
+            });
+
+            if (formDates !== undefined) {
+
+                const newVal = formDates ? new Date(formDates).toISOString() : null;
+
+                showLoading('Updating...');
+                const { error } = await supabaseClient.from('adminshare').update({ expire_at: newVal }).eq('user_id', uid);
+
+                if (error) {
+                    console.error("Update Expiry Failed:", error);
+                    toast('error', 'Update Failed: ' + error.message);
+                } else {
+                    toast('success', 'Updated!');
+                    Swal.close();
+                    manageUsers();
+                }
+                hideLoading();
+            }
+        };
+
+        window.toggleRole = async (uid, currentRole) => {
+            const newRole = currentRole === 'admin' ? 'customer' : 'admin';
+
+            const res = await Swal.fire({
+                title: `Change role to ${newRole.toUpperCase()}?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Change'
+            });
+
+            if (res.isConfirmed) {
+                showLoading('Updating...');
+                const { error } = await supabaseClient.from('adminshare').update({ role: newRole }).eq('user_id', uid);
+                if (error) toast('error', 'Update Failed');
+                else {
+                    toast('success', 'Updated!');
+                    Swal.close();
+                    manageUsers();
+                }
+                hideLoading();
+            }
+        };
+
+        window.deleteUser = async (targetId) => {
+            const res = await Swal.fire({
+                title: 'Remove User?',
+                text: "เขาจะไม่สามารถเข้าใช้งานได้อีก และข้อความทั้งหมดของเขาจะถูกลบ",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Remove',
+                confirmButtonColor: '#ef476f'
+            });
+
+            if (res.isConfirmed) {
+                showLoading('Removing...');
+                await supabaseClient.from('shareflex').delete().eq('owner_id', targetId);
+                const { error } = await supabaseClient.from('adminshare').delete().eq('user_id', targetId);
+
+                if (error) {
+                    console.error("Delete Failed:", error);
+                    toast('error', 'ลบไม่สำเร็จ: ' + error.message);
+                } else {
+                    toast('success', 'ลบเรียบร้อย');
+                    Swal.close();
+                    manageUsers();
+                }
+                hideLoading();
+            }
+        };
+
+        document.getElementById('add-new-btn').addEventListener('click', () => openEditor());
+
+        window.openEditor = async (item = null) => {
+            Swal.fire({
+                title: item ? 'Edit Message' : 'New Message',
+                html: `
+                    <div class="space-y-4 text-left">
+                        <div>
+                            <label class="text-xs text-gray-400 uppercase font-bold ml-1">Title</label>
+                            <input id="edit-title" class="input-3d" value="${item ? item.title : ''}" placeholder="ชื่อข้อความ...">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-400 uppercase font-bold ml-1">Type</label>
+                            <select id="edit-type" class="input-3d bg-[#2b2d42]">
+                                <option value="flex" ${!item || item.category === 'flex' ? 'selected' : ''}>Flex Message (Bubble/Carousel)</option>
+                                <option value="custom" ${item && item.category === 'custom' ? 'selected' : ''}>Custom JSON (Full Payload)</option>
+                                <option value="image" ${item && item.category === 'image' ? 'selected' : ''}>Image Only</option>
+                                <option value="text" ${item && item.category === 'text' ? 'selected' : ''}>Text Only</option>
+                            </select>
+                        </div>
+                        <!-- JSON Editor (Flex/Custom) -->
+                        <div id="container-json">
+                            <label class="text-xs text-gray-400 uppercase font-bold ml-1">JSON Data</label>
+                            <textarea id="edit-json" class="input-3d h-48 font-mono text-sm" placeholder="..."></textarea>
+                            <button onclick="pasteExample()" type="button" class="text-xs text-yellow-400 mt-1 hover:underline ml-1">✨ Paste Example</button>
+                        </div>
+                        
+                        <!-- Text Input -->
+                        <div id="container-text" class="hidden">
+                             <label class="text-xs text-gray-400 uppercase font-bold ml-1">Message Content</label>
+                             <textarea id="edit-text-content" class="input-3d h-32 text-lg" placeholder="พิมพ์ข้อความที่ต้องการส่ง..."></textarea>
+                        </div>
+
+                        <!-- Image Input -->
+                         <div id="container-image" class="hidden">
+                             <label class="text-xs text-gray-400 uppercase font-bold ml-1">Image URL (Direct Link)</label>
+                             <input id="edit-image-url" class="input-3d text-sm" placeholder="https://example.com/image.jpg">
+                             <p class="text-[10px] text-gray-500 mt-1">*รูปภาพจะใช้ลิงก์เดียวกันทั้งรูปจริงและพรีวิว</p>
+                        </div>
+
+                        <div class="border-t border-gray-700 pt-3 mt-1">
+                             <label class="text-xs text-gray-400 uppercase font-bold ml-1"><i class="fas fa-clock mr-1"></i> Message Expiration (Optional)</label>
+                             <div class="flex gap-2 items-center">
+                                 <input id="edit-expire" type="datetime-local" class="input-3d bg-[#2b2d42] text-sm flex-grow">
+                                 <button type="button" onclick="document.getElementById('edit-expire').value=''" class="text-gray-500 hover:text-red-400 text-xs px-2">❌</button>
+                             </div>
+                        </div>
+                    </div>
+                `,
+                didOpen: () => {
+                    const typeSelect = document.getElementById('edit-type');
+                    const jsonContainer = document.getElementById('container-json');
+                    const textContainer = document.getElementById('container-text');
+                    const imageContainer = document.getElementById('container-image');
+
+                    const updateUI = () => {
+                        const val = typeSelect.value;
+                        jsonContainer.classList.add('hidden');
+                        textContainer.classList.add('hidden');
+                        imageContainer.classList.add('hidden');
+
+                        if (val === 'text') textContainer.classList.remove('hidden');
+                        else if (val === 'image') imageContainer.classList.remove('hidden');
+                        else {
+                            jsonContainer.classList.remove('hidden');
+
+                            const jsonInput = document.getElementById('edit-json');
+                            if (val === 'flex') jsonInput.placeholder = 'วางเฉพาะส่วน "contents" ของ Flex Message ที่นี่';
+                            else jsonInput.placeholder = 'วาง JSON ของ Message ทั้งก้อนที่นี่ ({ "type": "flex", ... })';
+                        }
+                    };
+
+                    typeSelect.addEventListener('change', updateUI);
+                    updateUI();
+
+                    if (item) {
+                        try {
+                            if (item.category === 'text') {
+                                document.getElementById('edit-text-content').value = item.flex_json.text || '';
+                            } else if (item.category === 'image') {
+                                document.getElementById('edit-image-url').value = item.flex_json.originalContentUrl || '';
+                            } else {
+                                // JSON Based
+                                let contentStr = '';
+                                if (item.category === 'flex' && item.flex_json.contents) {
+                                    contentStr = JSON.stringify(item.flex_json.contents, null, 2);
+                                } else {
+                                    contentStr = JSON.stringify(item.flex_json, null, 2);
+                                }
+                                document.getElementById('edit-json').value = contentStr;
+                            }
+                        } catch (e) { console.error(e); }
+
+                        if (item.expire_at) {
+                            const d = new Date(item.expire_at);
+                            d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                            document.getElementById('edit-expire').value = d.toISOString().slice(0, 16);
+                        }
+                    }
+
+                    window.pasteExample = () => {
+                        const ex = {
+                            flex: '{\n  "type": "bubble",\n  "body": {\n    "type": "box",\n    "layout": "vertical",\n    "contents": [\n      { "type": "text", "text": "Hello Flex" }\n    ]\n  }\n}',
+                            custom: '{\n  "type": "flex",\n  "altText": "My Custom Message",\n  "contents": {\n    "type": "bubble",\n    "body": { "type": "box", "layout": "vertical", "contents": [{ "type": "text", "text": "Custom" }] }\n  }\n}'
+                        };
+                        document.getElementById('edit-json').value = ex[typeSelect.value] || '';
+                    };
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Save Asset',
+                preConfirm: () => {
+                    const title = document.getElementById('edit-title').value;
+                    const type = document.getElementById('edit-type').value;
+                    const expireVal = document.getElementById('edit-expire').value;
+
+                    if (!title) return Swal.showValidationMessage('กรุณาใส่ชื่อ Title');
+
+                    let finalJson = {};
+
+                    try {
+                        if (type === 'text') {
+                            const textVal = document.getElementById('edit-text-content').value;
+                            if (!textVal) throw new Error('กรุณาใส่ข้อความ');
+                            finalJson = { type: 'text', text: textVal };
+                        } else if (type === 'image') {
+                            const url = document.getElementById('edit-image-url').value;
+                            if (!url) throw new Error('กรุณาใส่ลิงก์รูปภาพ');
+                            finalJson = { type: 'image', originalContentUrl: url, previewImageUrl: url };
+                        } else {
+                            const jsonStr = document.getElementById('edit-json').value;
+                            if (!jsonStr) throw new Error('กรุณาใส่ JSON');
+                            const parsed = JSON.parse(jsonStr);
+
+                            if (type === 'flex') {
+                                finalJson = { type: 'flex', altText: title, contents: parsed };
+                            } else {
+                                finalJson = parsed;
+                            }
+                        }
+
+                        const expireAt = expireVal ? new Date(expireVal).toISOString() : null;
+
+                        return { title, category: type, flex_json: finalJson, expire_at: expireAt };
+                    } catch (e) {
+                        return Swal.showValidationMessage('Error: ' + e.message);
+                    }
+                }
+            }).then(async (res) => {
+                if (res.isConfirmed) {
+                    showLoading('Saving...');
+                    const payload = { ...res.value, owner_id: USER_ID };
+
+
+                    if (!item && !payload.share_uuid) {
+                        try {
+                            payload.share_uuid = self.crypto.randomUUID();
+                        } catch (e) {
+                            payload.share_uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                                const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                                return v.toString(16);
+                            });
+                        }
+                    }
+
+                    let error;
+
+                    if (item) {
+                        ({ error } = await supabaseClient.from('shareflex').update(payload).eq('id', item.id));
+                    } else {
+                        ({ error } = await supabaseClient.from('shareflex').insert(payload));
+                    }
+
+                    hideLoading();
+                    if (error) toast('error', 'บันทึกไม่สำเร็จ');
+                    else {
+                        toast('success', 'บันทึกสำเร็จ');
+                        loadMessages();
+                    }
+                }
+            });
+        };
+
+        window.editMsg = async (id) => {
+            const { data } = await supabaseClient.from('shareflex').select('*').eq('id', id).single();
+            if (data) openEditor(data);
+        };
+
+        window.deleteMsg = async (id) => {
+            Swal.fire({
+                title: 'Delete?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Delete'
+            }).then(async (res) => {
+                if (res.isConfirmed) {
+                    await supabaseClient.from('shareflex').delete().eq('id', id);
+                    loadMessages();
+                    toast('success', 'Deleted');
+                }
+            });
+        };
+
+        window.shareMsg = async (id, ownerId, jsonStr) => {
+            const flexJson = JSON.parse(decodeURIComponent(jsonStr));
+            if (!liff.isApiAvailable('shareTargetPicker')) {
+                return toast('error', 'อุปกรณ์ไม่รองรับ shareTargetPicker');
+            }
+            try {
+                const res = await liff.shareTargetPicker([flexJson], { isMultiple: true });
+                if (res) {
+                    toast('success', 'Share Sent!');
+                    incrementShareStats(id, ownerId);
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        };
+
+        window.incrementShareStats = async (msgId, ownerId) => {
+
+            const { data: msg } = await supabaseClient.from('shareflex').select('share_count').eq('id', msgId).single();
+            if (msg) {
+                await supabaseClient.from('shareflex').update({ share_count: (msg.share_count || 0) + 1 }).eq('id', msgId);
+            }
+
+            const { data: user } = await supabaseClient.from('adminshare').select('total_shares').eq('user_id', ownerId).single();
+            if (user) {
+                await supabaseClient.from('adminshare').update({ total_shares: (user.total_shares || 0) + 1 }).eq('user_id', ownerId);
+            }
+
+
+            if (document.getElementById('flex-grid').children.length > 0) loadMessages();
+        };
+
+        window.getLink = async (uuid, id) => {
+            // Lazy fix: If UUID is missing, generate one and update DB
+            if (!uuid || uuid === 'null' || uuid === 'undefined') {
+                try {
+                    uuid = self.crypto.randomUUID ? self.crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                        const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                        return v.toString(16);
+                    });
+
+
+                    await supabaseClient.from('shareflex').update({ share_uuid: uuid }).eq('id', id);
+                } catch (e) {
+                    console.error("UUID Gen Error", e);
+                    return toast('error', 'เกิดข้อผิดพลาดในการสร้าง Link');
+                }
+            }
+
+            const link = `https://line.me/R/app/${LIFF_ID}?share=${uuid}`;
+
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(link)
+                    .then(() => toast('success', 'คัดลอก Link แล้ว!'))
+                    .catch((err) => {
+                        console.error('Clipboard failed', err);
+                        fallbackCopy(link);
+                    });
+            } else {
+                fallbackCopy(link);
+            }
+        };
+
+        function fallbackCopy(text) {
+            Swal.fire({
+                title: 'Copy Link',
+                html: `
+                    <p class="text-sm text-gray-300 mb-2">Device limit, please copy manually:</p>
+                    <div class="relative">
+                        <input id="swal-copy-input" type="text" value="${text}" class="input-3d text-sm font-mono text-yellow-400" readonly>
+                        <button onclick="copyToClipboardManual()" class="absolute right-2 top-2 text-gray-400 hover:text-white"><i class="fas fa-copy"></i></button>
+                    </div>
+                `,
+                confirmButtonText: 'ปิด',
+                didOpen: () => {
+                    const input = document.getElementById('swal-copy-input');
+                    input.focus();
+                    input.select();
+
+                    window.copyToClipboardManual = () => {
+                        input.select();
+                        document.execCommand('copy');
+                        toast('success', 'Copied!');
+                    };
+                }
+            });
+        }
+
+        window.handleAutoShare = async (uuid) => {
+            showLoading('Preparing Share...');
+            try {
+                const { data, error } = await supabaseClient.from('shareflex').select('id, flex_json, owner_id, expire_at').eq('share_uuid', uuid).single();
+                if (data) {
+
+                    const { data: owner } = await supabaseClient.from('adminshare').select('expire_at').eq('user_id', data.owner_id).single();
+                    if (owner && owner.expire_at) {
+                        if (new Date() > new Date(owner.expire_at)) {
+                            Swal.fire({
+                                title: 'Link Expired',
+                                text: 'ลิงก์นี้หมดอายุการใช้งานแล้ว เนื่องจากเจ้าของบัญชีหมดสัญญา',
+                                icon: 'error',
+                                confirmButtonText: 'ปิด'
+                            }).then(() => liff.closeWindow());
+                            return;
+                        }
+                    }
+
+
+                    if (data.expire_at) {
+                        if (new Date() > new Date(data.expire_at)) {
+                            Swal.fire({
+                                title: 'Message Expired',
+                                text: 'ข้อความนี้หมดอายุการใช้งานแล้ว',
+                                icon: 'error',
+                                confirmButtonText: 'ปิด'
+                            }).then(() => liff.closeWindow());
+                            return;
+                        }
+                    }
+
+                    if (liff.isApiAvailable('shareTargetPicker')) {
+                        await liff.shareTargetPicker([data.flex_json], { isMultiple: true });
+                        incrementShareStats(data.id, data.owner_id);
+                        liff.closeWindow();
+                    } else {
+                        Swal.fire({
+                            title: 'Device Not Supported',
+                            text: 'กรุณาเปิดลิงก์นี้ใน LINE บนมือถือเพื่อทำการแชร์',
+                            icon: 'info',
+                            confirmButtonText: 'ปิด'
+                        });
+                    }
+                } else {
+                    alert('Message not found');
+                }
+            } catch (e) {
+                console.error(e);
+            } finally {
+                hideLoading();
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', initApp);
+
+        let debounce;
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            clearTimeout(debounce);
+            debounce = setTimeout(() => {
+                const term = e.target.value.toLowerCase();
+                const cards = document.querySelectorAll('.card-3d');
+                cards.forEach(c => {
+                    const txt = c.innerText.toLowerCase();
+                    c.style.display = txt.includes(term) ? 'flex' : 'none';
+                });
+            }, 300);
+        });
+
+    </script>
+</body>
+
+</html>
