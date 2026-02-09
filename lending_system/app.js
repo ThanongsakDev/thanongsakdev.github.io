@@ -1,5 +1,5 @@
 // Configuration
-const LIFF_ID = "2009040976-c4n34moj";
+const LIFF_ID = "2009040976-AvisoFsg";
 const SUPABASE_URL = "https://danbpunjbzksjxekyvkb.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhbmJwdW5qYnprc2p4ZWt5dmtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMDQ0MjgsImV4cCI6MjA4NTY4MDQyOH0._qNgd39dOTuh3Rrul5SrAaV4DKryUf9J4DuAvZA2M7Q";
 
