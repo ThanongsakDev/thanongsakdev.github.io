@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Lending System - LINE MINI App</title>
+    <link id="favicon" rel="icon" href="https://cdn-icons-png.flaticon.com/128/5525/5525088.png">
+    <link id="apple-touch-icon" rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/128/5525/5525088.png">
+    <meta name="description" content="Lending System" />
+    <meta name="author" content="T42" />
+    <meta property="og:title" content="Lending System" />
+    <meta property="og:description" content="Lending System-T42 Thailand" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://google.com" />
+    <meta property="og:image" content="https://cdn-icons-png.flaticon.com/128/5525/5525088.png" />
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/128/5525/5525088.png">
+    <meta name="description" content="Lending System" />
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Kanit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/gh/lazywasabi/thai-web-fonts@7/fonts/LINESeedSansTH/LINESeedSansTH.css"
+        rel="stylesheet" />
+</head>
+
+<body>
+
+
+    <div id="loading-overlay">
+        <img src="https://developers.line.biz/media/line-mini-app/LINE_spinner_light.svg" class="spinner" alt="Loading">
+        <p class="loading-text">โปรดรอสักครู่...</p>
+    </div>
+
+    <div class="app-container" id="app" style="display: none; max-width: 1200px; margin: 0 auto;">
+
+
+        <header class="glass-header">
+            <div class="user-profile">
+                <div class="avatar-frame">
+                    <img id="user-avatar" src="" alt="Avatar" class="avatar">
+                </div>
+                <div class="user-info">
+                    <span style="font-size: 0.75rem; color: var(--text-light); font-weight: 600;">สวัสดี คุณ,</span>
+                    <h3 id="user-name">Loading...</h3>
+                    <span id="user-role" class="role-badge">Member</span>
+                </div>
+            </div>
+            <button onclick="toggleAdminPanel()" id="admin-toggle" class="btn-ghost" style="display: none;">Admin
+                Dashboard</button>
+        </header>
+
+
+        <section class="stats-grid">
+            <div class="stat-card click-ani" onclick="loadData()">
+                <p class="stat-label">Available</p>
+                <h2 id="stat-available" class="stat-value">0</h2>
+            </div>
+            <div class="stat-card click-ani" onclick="showMyLoans()">
+                <p class="stat-label">Checking Out</p>
+                <h2 id="stat-borrowing" class="stat-value"
+                    style="background: linear-gradient(135deg, #0984e3, #74b9ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    0</h2>
+            </div>
+            <div class="stat-card click-ani" onclick="showMyLoans()">
+                <p class="stat-label">Overdue</p>
+                <h2 id="stat-overdue" class="stat-value"
+                    style="background: linear-gradient(135deg, #d63031, #ff7675); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    0</h2>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label">Credit Score</p>
+                <h2 id="stat-points" class="stat-value"
+                    style="background: linear-gradient(135deg, #fdcb6e, #ffeaa7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    100</h2>
+            </div>
+        </section>
+
+
+        <div class="search-section">
+            <div class="search-container">
+                <i
+                    style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 1.2rem;">🔍</i>
+                <input type="text" id="search-input" placeholder="Search for equipment..." class="search-input">
+            </div>
+        </div>
+
+        <div class="filter-bar" id="category-filters">
+            <div class="filter-chip active click-ani" onclick="filterByCategory('all')">All Assets</div>
+
+        </div>
+
+
+        <div id="equipment-container" class="equipment-grid">
+            
+        </div>
+    </div>
+
+
+
+    <script src="app.js"></script>
+</body>
+
+</html>
