@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LINE Chatbot Admin • Webhook</title>
+    <title>LINE Chatbot Admin • Webhook api</title>
     <link id="favicon" rel="icon" href="https://cdn-icons-png.flaticon.com/128/9977/9977388.png">
     <link id="apple-touch-icon" rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/128/9977/9977388.png">
     <meta name="description" content="LINE Chatbot Admin" />
-    <meta name="author" content="webhook api" />
+    <meta name="author" content="Webhook api" />
     <meta property="og:title" content="LINE Chatbot Admin" />
     <meta property="og:description" content="LINE Chatbot Admin-Webhook api" />
     <meta property="og:type" content="website" />
@@ -1569,60 +1569,87 @@
             const user = JSON.parse(decodeURIComponent(userStr));
             editingUserId = user.userId;
 
+            const statusBadge = user.status === 'block'
+                ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-50 text-rose-600 border border-rose-100"><i data-lucide="ban" class="w-2.5 h-2.5"></i> Blocked</span>`
+                : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100"><i data-lucide="circle-check" class="w-2.5 h-2.5"></i> Active</span>`;
+
             document.getElementById('modal-title').innerText = 'แก้ไขผู้ใช้งาน';
             document.getElementById('modal-content').innerHTML = `
-                <form id="userForm" class="space-y-6">
-                    <div class="flex flex-col sm:flex-row sm:items-center gap-5 p-5 bg-gradient-to-r from-slate-50 to-white rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden">
-                        <div class="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]"></div>
-                        <div class="flex items-center gap-4 relative z-10 w-full sm:w-auto flex-1 min-w-0">
-                            <img src="${user.pictureUrl || 'https://cdn-icons-png.flaticon.com/128/1144/1144760.png'}" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-4 border-white shadow-md flex-shrink-0" />
-                            <div class="flex-1 min-w-0">
-                            <h3 class="font-bold text-slate-800 text-lg truncate font-display">${escapeHtml(user.displayName)}</h3>
-                            <div class="flex items-center justify-between gap-2 text-sm text-gray-500 font-mono mt-1.5 bg-white/80 backdrop-blur-sm px-2 py-1 rounded-lg border border-slate-200 w-full sm:w-fit max-w-[140px] sm:max-w-none cursor-pointer hover:border-indigo-300 transition-colors shadow-sm" onclick="copyToClipboard('${user.userId}')">
-                                <span class="truncate flex-1">${user.userId}</span>
-                                <i data-lucide="copy" class="w-3.5 h-3.5 text-indigo-500 flex-shrink-0"></i>
-                            </div>
-                            </div>
+                <form id="userForm" class="flex flex-col gap-0">
+
+                    <!-- Profile Strip -->
+                    <div class="mx-0.5 my-3 rounded-2xl border border-slate-200/70 bg-slate-50/60 p-3.5 flex flex-wrap items-center gap-3">
+                        <div class="relative shrink-0">
+                            <img src="${user.pictureUrl || 'https://cdn-icons-png.flaticon.com/128/1144/1144760.png'}"
+                                 class="w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover" />
+                            <div class="absolute bottom-0 right-0 w-3 h-3 ${user.status === 'block' ? 'bg-slate-400' : 'bg-emerald-500'} rounded-full border-2 border-white"></div>
                         </div>
-                        <div class="flex flex-col gap-2 relative z-10 w-full sm:w-auto mt-4 sm:mt-0">
-                            <button type="button" onclick="updateUserProfile(this, '${user.userId}')" class="px-3 py-2 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-100 transition whitespace-nowrap text-sm font-bold flex items-center justify-center gap-1.5 border border-indigo-100 shadow-sm">
-                                <i data-lucide="refresh-cw" class="w-4 h-4"></i> อัปเดตโปรไฟล์
+                        <div class="flex-1 min-w-0">
+                            <div class="font-semibold text-slate-800 text-[15px] truncate">${escapeHtml(user.displayName)}</div>
+                            <div class="flex items-center gap-1.5 mt-1">
+                                <span class="text-[11px] font-mono text-slate-400 truncate max-w-[150px] sm:max-w-xs">${user.userId}</span>
+                                <button type="button" onclick="copyToClipboard('${user.userId}')"
+                                        class="text-slate-300 hover:text-indigo-500 transition-colors flex-shrink-0" title="คัดลอก ID">
+                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                            <div class="mt-1.5">${statusBadge}</div>
+                        </div>
+                        <div class="flex flex-row sm:flex-col gap-2 w-full sm:w-auto">
+                            <button type="button" onclick="updateUserProfile(this, '${user.userId}')"
+                                    class="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all shadow-sm whitespace-nowrap">
+                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> อัปเดตโปรไฟล์
                             </button>
-                            <button type="button" onclick="deleteUserProfile(this, '${user.userId}')" class="px-3 py-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 transition whitespace-nowrap text-sm font-bold flex items-center justify-center gap-1.5 border border-rose-100 shadow-sm">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i> ลบผู้ใช้งาน
+                            <button type="button" onclick="deleteUserProfile(this, '${user.userId}')"
+                                    class="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-rose-600 bg-white border border-rose-100 rounded-xl hover:bg-rose-50 transition-all shadow-sm whitespace-nowrap">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> ลบผู้ใช้งาน
                             </button>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-bold text-slate-700 mb-2">บทบาท (Role)</label>
+
+                    <!-- Role & Status selects -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 px-0.5 pb-3">
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider ml-1">บทบาท (Role)</label>
                             <div class="relative">
-                                <select name="role" class="w-full appearance-none rounded-xl border border-slate-200 p-3.5 pr-8 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white shadow-sm font-medium text-slate-700">
+                                <select name="role" class="w-full appearance-none rounded-xl border border-slate-200 px-3 py-2.5 pr-8 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white text-slate-700 font-medium">
                                     <option value="user" ${!user.role || user.role === 'user' ? 'selected' : ''}>ผู้ใช้ทั่วไป (user)</option>
-                                    <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin - ดูแล OA นี้</option>
-                                    <option value="super_admin" ${user.role === 'super_admin' ? 'selected' : ''}>Super Admin - ดูแลทุก OA</option>
+                                    <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin — ดูแล OA นี้</option>
+                                    <option value="super_admin" ${user.role === 'super_admin' ? 'selected' : ''}>Super Admin — ทุก OA</option>
                                 </select>
-                                <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
+                                <i data-lucide="chevron-down" class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none"></i>
                             </div>
-                            <p class="text-[11px] text-indigo-600 mt-2 ml-1 font-semibold flex items-center gap-1"><i data-lucide="info" class="w-3 h-3"></i> <b>super_admin</b> = switch ได้ทุก OA &nbsp;|&nbsp; <b>admin</b> = OA นี้เท่านั้น &nbsp;|&nbsp; <b>user</b> = ทั่วไป</p>
                         </div>
-                        <div>
-                            <label class="block text-sm font-bold text-slate-700 mb-2">สถานะ (Status)</label>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider ml-1">สถานะ (Status)</label>
                             <div class="relative">
-                                <select name="status" class="w-full appearance-none rounded-xl border border-slate-200 p-3.5 pr-8 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white shadow-sm font-medium text-slate-700">
+                                <select name="status" class="w-full appearance-none rounded-xl border border-slate-200 px-3 py-2.5 pr-8 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white text-slate-700 font-medium">
                                     <option value="follow" ${user.status === 'follow' ? 'selected' : ''}>Active (ปกติ)</option>
                                     <option value="block" ${user.status === 'block' ? 'selected' : ''}>Block (ระงับการใช้งาน)</option>
                                 </select>
-                                <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
+                                <i data-lucide="chevron-down" class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none"></i>
                             </div>
                         </div>
                     </div>
-                    <div class="flex justify-end gap-3 pt-6 border-t border-gray-100/50">
-                        <button type="button" onclick="closeModal()" class="px-6 py-3 bg-white text-slate-600 rounded-xl hover:bg-slate-50 transition font-bold border border-slate-200 shadow-sm">ยกเลิก</button>
-                        <button type="submit" class="px-6 py-3 btn-primary text-white rounded-xl hover:shadow-lg transition flex items-center gap-2 font-bold tracking-wide">
+
+                    <!-- Hint -->
+                    <div class="mx-0.5 mb-4 flex items-start gap-2 text-[11px] text-slate-400 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2.5 leading-relaxed">
+                        <i data-lucide="info" class="w-3.5 h-3.5 shrink-0 mt-0.5 text-slate-300"></i>
+                        <span><b class="text-indigo-500 font-semibold">super_admin</b> เห็นได้ทุก OA &nbsp;·&nbsp; <b class="text-slate-600 font-semibold">admin</b> เห็นเฉพาะ OA นี้ &nbsp;·&nbsp; <b class="text-slate-600 font-semibold">user</b> สิทธิ์ปกติ</span>
+                    </div>
+
+                    <!-- Footer buttons -->
+                    <div class="flex gap-2.5 pt-3 border-t border-slate-100">
+                        <button type="button" onclick="closeModal()"
+                                class="flex-1 py-2.5 text-sm font-medium text-slate-500 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-all">
+                            ยกเลิก
+                        </button>
+                        <button type="submit"
+                                class="flex-[2] py-2.5 text-sm font-semibold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-sm shadow-indigo-100">
                             <i data-lucide="save" class="w-4 h-4"></i> อัปเดตสถานะ
                         </button>
                     </div>
+
                 </form>
             `;
             document.getElementById('userForm').onsubmit = handleUserSubmit;
@@ -6050,56 +6077,53 @@
 
             content.innerHTML = `
                 <div class="flex flex-col gap-6 slide-in">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h1 class="text-3xl font-bold text-slate-800 flex items-center gap-3 font-display">
-                                <span class="bg-indigo-100 text-indigo-600 p-2.5 rounded-2xl shadow-sm"><i data-lucide="shield" class="w-8 h-8"></i></span>
-                                SaaS Management (Super Admin)
+                    <!-- Header: mobile-friendly -->
+                    <div class="flex flex-wrap items-start gap-3">
+                        <div class="flex-1 min-w-0">
+                            <h1 class="text-2xl md:text-3xl font-bold text-slate-800 flex items-center gap-3 font-display leading-tight">
+                                <span class="bg-indigo-100 text-indigo-600 p-2 md:p-2.5 rounded-2xl shadow-sm shrink-0"><i data-lucide="shield" class="w-6 h-6 md:w-8 md:h-8"></i></span>
+                                <span>SaaS Management<br class="md:hidden"><span class="text-indigo-500 text-lg md:text-3xl font-semibold"> (Super Admin)</span></span>
                             </h1>
                             <p class="text-sm text-slate-500 mt-2 ml-1 font-medium">จัดการลูกค้า (Tenants) ทั้งหมดในระบบ</p>
                         </div>
-                        <button onclick="openTenantModal()" class="btn-primary text-white px-6 py-3 rounded-2xl flex items-center gap-2 font-semibold shadow-lg">
-                            <i data-lucide="plus" class="w-5 h-5"></i> เพิ่มลูกค้าใหม่
+                        <button onclick="openTenantModal()" class="btn-primary text-white px-4 py-3 rounded-2xl flex items-center gap-2 font-semibold shadow-lg shrink-0 text-sm">
+                            <i data-lucide="plus" class="w-4 h-4"></i> <span class="hidden sm:inline">เพิ่มลูกค้าใหม่</span><span class="sm:hidden">เพิ่ม</span>
                         </button>
                     </div>
 
-                    <div class="glass rounded-3xl overflow-hidden shadow-xl border-0">
+                    <!-- Desktop Table (hidden on mobile) -->
+                    <div class="glass rounded-3xl overflow-hidden shadow-xl border-0 hidden md:block">
                         <table class="w-full text-left">
                             <thead class="bg-slate-50/50 border-b border-slate-100">
                                 <tr>
                                     <th class="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest">ชื่อลูกค้า</th>
-                                    <th class="px-6 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest">Webhook ID</th>
+                                    <th class="px-6 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest">Webhook URL</th>
                                     <th class="px-6 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest">หมดอายุ</th>
                                     <th class="px-6 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest">สถานะ</th>
                                     <th class="px-8 py-5 text-right text-xs font-bold text-slate-500 uppercase tracking-widest">Actions</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">
-                                ${tenants?.map(t => `
+                                ${tenants?.map(t => {
+                                    const isActive = t.expires_at && new Date(t.expires_at) > new Date();
+                                    const webhookUrl = `${API_BASE_URL}?webhook_id=${t.webhook_id}`;
+                                    return `
                                     <tr class="hover:bg-indigo-50/30 transition-all group">
                                         <td class="px-8 py-5">
                                             <div class="font-bold text-slate-800">${t.name || 'Unnamed'}</div>
-                                            <div class="text-[10px] text-slate-400 font-mono">${t.id}</div>
+                                            <div class="text-[10px] text-slate-400 font-mono truncate max-w-[180px]">${t.id}</div>
                                         </td>
                                         <td class="px-6 py-5">
-                                            <div class="flex items-center gap-2 group/url">
-                                                <div class="px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg text-[11px] font-mono border border-indigo-100/50 truncate max-w-[200px]">
-                                                    ${API_BASE_URL}?webhook_id=${t.webhook_id}
-                                                </div>
-                                                <button onclick="copyToClipboard('${API_BASE_URL}?webhook_id=${t.webhook_id}')" class="p-1.5 text-indigo-400 hover:text-indigo-600 hover:bg-indigo-100 rounded-lg transition-all opacity-0 group-hover/url:opacity-100" title="คัดลอก Webhook URL">
-                                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                                                </button>
+                                            <div class="flex items-center gap-2">
+                                                <div class="px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg text-[11px] font-mono border border-indigo-100/50 truncate max-w-[200px]">${webhookUrl}</div>
+                                                <button onclick="copyToClipboard('${webhookUrl}')" class="p-1.5 text-indigo-400 hover:text-indigo-600 hover:bg-indigo-100 rounded-lg transition-all opacity-0 group-hover:opacity-100"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
                                             </div>
                                         </td>
                                         <td class="px-6 py-5">
-                                            <div class="text-sm font-medium ${new Date(t.expires_at) < new Date() ? 'text-rose-500' : 'text-slate-600'}">
-                                                ${t.expires_at ? new Date(t.expires_at).toLocaleDateString() : 'ไม่มี'}
-                                            </div>
+                                            <div class="text-sm font-medium ${isActive ? 'text-slate-600' : 'text-rose-500'}">${t.expires_at ? new Date(t.expires_at).toLocaleDateString('th-TH') : 'ไม่มี'}</div>
                                         </td>
                                         <td class="px-6 py-5">
-                                            <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${new Date(t.expires_at) > new Date() ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}">
-                                                ${new Date(t.expires_at) > new Date() ? 'Active' : 'Expired'}
-                                            </span>
+                                            <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${isActive ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}">${isActive ? 'Active' : 'Expired'}</span>
                                         </td>
                                         <td class="px-8 py-5 text-right">
                                             <div class="flex justify-end gap-2">
@@ -6107,10 +6131,41 @@
                                                 <button onclick="deleteTenant('${t.id}')" class="p-2 text-rose-600 hover:bg-rose-50 rounded-xl transition-all"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                                             </div>
                                         </td>
-                                    </tr>
-                                `).join('') || '<tr><td colspan="5" class="p-10 text-center text-slate-400">ยังไม่มีข้อมูลลูกค้า</td></tr>'}
+                                    </tr>`;
+                                }).join('') || '<tr><td colspan="5" class="p-10 text-center text-slate-400">ยังไม่มีข้อมูลลูกค้า</td></tr>'}
                             </tbody>
                         </table>
+                    </div>
+
+                    <!-- Mobile Cards (visible on mobile only) -->
+                    <div class="flex flex-col gap-4 md:hidden">
+                        ${tenants?.length ? tenants.map(t => {
+                            const isActive = t.expires_at && new Date(t.expires_at) > new Date();
+                            const webhookUrl = `${API_BASE_URL}?webhook_id=${t.webhook_id}`;
+                            return `
+                            <div class="glass rounded-2xl p-5 shadow-sm border-0">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div>
+                                        <div class="font-bold text-slate-800 text-base">${t.name || 'Unnamed'}</div>
+                                        <div class="text-[10px] text-slate-400 font-mono mt-0.5">${t.id.slice(0,16)}...</div>
+                                    </div>
+                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${isActive ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-rose-50 text-rose-600 border border-rose-100'}">${isActive ? 'Active' : 'Expired'}</span>
+                                </div>
+                                <div class="bg-indigo-50 rounded-xl px-3 py-2 flex items-center justify-between gap-2 mb-3">
+                                    <span class="text-[11px] font-mono text-indigo-600 truncate flex-1">${webhookUrl}</span>
+                                    <button onclick="copyToClipboard('${webhookUrl}')" class="p-1.5 text-indigo-500 hover:bg-indigo-100 rounded-lg transition-all shrink-0">
+                                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="text-xs text-slate-500">หมดอายุ: <span class="font-bold ${isActive ? 'text-slate-700' : 'text-rose-500'}">${t.expires_at ? new Date(t.expires_at).toLocaleDateString('th-TH') : 'ไม่มี'}</span></div>
+                                    <div class="flex gap-2">
+                                        <button onclick="openTenantModal('${t.id}')" class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-xl border border-indigo-100 transition-all"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                                        <button onclick="deleteTenant('${t.id}')" class="p-2 text-rose-600 hover:bg-rose-50 rounded-xl border border-rose-100 transition-all"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                    </div>
+                                </div>
+                            </div>`;
+                        }).join('') : `<div class="text-center py-12 text-slate-400 text-sm glass rounded-2xl">ยังไม่มีข้อมูลลูกค้า</div>`}
                     </div>
                 </div>
             `;
